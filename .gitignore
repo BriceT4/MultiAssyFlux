@@ -1,0 +1,6 @@
+
+*.pyc
+*.synctex
+*.synctex.gz
+*__pycache__
+
