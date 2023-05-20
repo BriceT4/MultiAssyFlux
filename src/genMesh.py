@@ -21,11 +21,9 @@ def genMesh(input_file):
     num_gen = input_file.num_gen
     num_particles = input_file.num_particles
 
-    mat_U = np.array([0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,
-                0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0])
-    mat_MOX = np.array([0,2,0,2,0,2,0,2,0,2,0,2,0,2,0,2,0,2,
-                0,2,0,2,0,2,0,2,0,2,0,2,0,2,0,2,0])
-    mat_water_ref = np.array([0]*39)
+    mat_U = input_file.mat_U
+    mat_MOX = input_file.mat_MOX
+    mat_water_ref = input_file.mat_water_ref
 
     if input_file.mat_1 == 'Uranium':
         mesh_mat_1 = mat_U
