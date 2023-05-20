@@ -59,19 +59,20 @@ def genMesh(input_file):
 
     for row in mesh:
         row['material'] = material_map[row['mat_ID']]
-
-    # ... continued from above
-
-    # Load x_sections_all data
+        
+    # Load x_sections_all data and headers
     with open(input_file.x_sections_set, 'r') as f:
         reader = csv.reader(f)
+        headers = next(reader) # read headers (the first row)
         x_sections_all = {rows[0]:rows[1:] for rows in reader}
 
     # Apply cross sections to each mesh
     for row in mesh:
         m = row['mat_ID']
         x_secs = x_sections_all[material_map[m]]
-        row.update({'x_sec': x_secs})
+        for idx, x_sec in enumerate(x_secs):
+            column_name = headers[idx+1] # adjust index as needed
+            row[column_name] = x_sec
 
     # Add x positions to mesh data
     loc_current = 0
