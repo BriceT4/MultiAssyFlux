@@ -19,7 +19,7 @@ model = 'Monte Carlo' # Can only be 'Monte Carlo' for now
 x_sections_set = 'xs\\x_sections_set_A.csv' # last letter can be A or B
 
 # number of generations
-num_gen = 20
+num_gen = 10
 # number of histories (particles)
-num_particles = 1000
+num_particles = 100
 
