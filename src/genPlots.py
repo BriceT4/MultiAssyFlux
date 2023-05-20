@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # solnMC.py
 # A MultiAssyFlux module
-# UFL ENU6106 Spring 2023 Term Project
-# Brice Turner, 2023
+# (C) Brice Turner, 2023
 
 
 import matplotlib.pyplot as plt
