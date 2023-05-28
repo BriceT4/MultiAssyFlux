@@ -12,6 +12,7 @@ import time
 time_start_solnMC = time.time()
 def solnMC(input_file, mesh, mesh_fuel, dir_output):
 
+    # needed to discard results from first few generations
     size_mesh_fuel = len(mesh_fuel) - 1 # num cols - 1
     gen_lower_lim = math.floor(0.1*input_file.num_gen)
     gens_kept = input_file.num_gen - gen_lower_lim
@@ -35,7 +36,8 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     def fn_det_mesh_interaction(mesh, m, n_E, mu, S, travel_dist):
         R = np.random.rand()
 
-        # Sigma_tr = mesh[m][f'Sigma_tr_{n_E}'] # transport xs, not needed for Monte Carlo
+        # transport xs, not needed for Monte Carlo
+        # Sigma_tr = mesh[m][f'Sigma_tr_{n_E}'] 
         Sigma_t = mesh[m][f'Sigma_t_{n_E}']
         Sigma_a = mesh[m][f'Sigma_a_{n_E}']
         Sigma_f = mesh[m][f'Sigma_f_{n_E}']
@@ -81,7 +83,6 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
             m = m_old # m when entering this is -1 b/c crossed BC
         else:
             n_exist = False
-        # m = 0 # placeholder
 
         return n_exist, m, mu, travel_dist
     # END:   DETERMINE BOUNDARY INTERACTION ##################################
@@ -93,12 +94,10 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     data_gen_J = np.zeros((2,len(mesh)))
     data_gen_Phi = np.zeros((2,len(mesh)))
     data_gen_Fi_t = np.zeros((2,len(mesh)))
-    data_gen_ms_birth = np.zeros(len(mesh))
     data_tot_TL = np.zeros((2,len(mesh)))
     data_tot_J = np.zeros((2,len(mesh)))
     data_tot_Phi = np.zeros((2,len(mesh)))
     data_tot_Fi_t = np.transpose(np.zeros((len(mesh))))
-    data_tot_ms_birth = np.zeros(len(mesh))
     num_gen = input_file.num_gen
     num_particles = input_file.num_particles
     ks = []
@@ -115,14 +114,12 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
         data_gen_J = np.zeros((2,len(mesh)))
         data_gen_Phi = np.zeros((2,len(mesh)))
         data_gen_Fi_t = np.zeros((2,len(mesh)))
-        # data_gen_ms_birth = np.zeros(len(mesh))
 
         # BEGIN: FOR EACH PARTICLE ###########################################
         for _ in range(num_particles):
             n_exist = True
             n_E = 1 # n's always born fast
             m, x = fn_det_pos_birth(mesh, mesh_fuel)
-            # data_gen_ms_birth[m] += 1
             mu = 2*np.random.rand() - 1
             if mu == 0: # just to be safe
                 mu_decider = np.random.rand()
@@ -194,7 +191,6 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
                             data_gen_J[n_E-1][m] += mu
                             x = x + travel_dist
                             n_exist, n_E, mu, S, travel_dist = fn_det_mesh_interaction(mesh, m, n_E, mu, S, travel_dist)
-
                     # END:   IF PARTICLE MOVES TO THE RIGHT ##################
                 # END:   WHILE PARTICLE REMAINS IN SAME MATERIAL #############  
             # END:   WHILE PARTICLE EXISTS ###################################
@@ -225,8 +221,7 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
             data_tot_TL = np.concatenate((data_tot_TL, data_gen_TL))
             data_tot_J = np.concatenate((data_tot_J, data_gen_J))
             data_tot_Phi = np.concatenate((data_tot_Phi, data_gen_Phi))
-            data_tot_Fi_t = np.concatenate((data_tot_Fi_t, data_gen_Fi_t)) 
-            # data_tot_ms_birth = np.concatenate((data_tot_ms_birth, data_gen_ms_birth)) 
+            data_tot_Fi_t = np.concatenate((data_tot_Fi_t, data_gen_Fi_t))  
         # END:   CALCULATE PARAMETERS OF INTEREST ############################
     # END:   FOR EACH GENERATION #############################################
 
@@ -246,7 +241,6 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
                            J_fund_1, J_fund_2,
                            Phi_fund_1, Phi_fund_2), axis=1).T
     
-    # data_ks = pd.DataFrame({'ks':ks, 'k_fund':k_fund})
     data_ks = np.append(ks, k_fund)
     # END:   CALCULATE FUNDAMENTAL MODES #####################################
 
@@ -266,10 +260,6 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     fp_ks = os.path.join(dir_output, filename_ks)
     np.savetxt(fp_ks, data_ks, delimiter=',', fmt='%s')
 
-    # filename_birth = f'MultiAssyFlux_loc_births_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
-    # fp_birth = os.path.join(dir_output, filename_birth)
-    # data_tot_ms_birth.to_csv(fp_birth)
-    
     time_elapsed_solnMC = time.time() - time_start_solnMC
     time_p = (time_elapsed_solnMC/num_gen/num_particles)*1000 # milliseconds
     print(f"""

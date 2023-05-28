@@ -63,15 +63,15 @@ def Setup(InputFile):
     from src.solnMC import solnMC
     data, data_ks, fp_data, fp_ks = solnMC(InputFile, mesh, mesh_fuel, dir_output)
 
-    return mesh, mesh_fuel, dir_output # , data, data_ks, fp_data, fp_ks
+    return mesh, mesh_fuel, dir_output, data, data_ks, fp_data, fp_ks
 # END:   SETUP ###############################################################
 
 
 # BEGIN: PLOT ################################################################
-# def plotIt(mesh, data_ks, fp_data, fp_ks, dir_output):
-#     from src.genPlots import plotter
-#     plotter(mesh, data_ks, fp_data, fp_ks, dir_output)
-#     return
+def plotIt(mesh, data_ks, fp_data, fp_ks, dir_output):
+    from src.genPlots import plotter
+    plotter(mesh, data_ks, fp_data, fp_ks, dir_output)
+    return
 # END:   PLOT ################################################################
 
 
@@ -83,7 +83,7 @@ def printSuccess():
     """)
 
 input_file = setupCommandLine()
-mesh, mesh_fuel, dir_output = Setup(input_file) # , data, data_ks, fp_data, fp_ks
+mesh, mesh_fuel, dir_output, data, data_ks, fp_data, fp_ks = Setup(input_file)
 # plotIt(mesh, data_ks, fp_data, fp_ks, dir_output)
 printSuccess()
 
