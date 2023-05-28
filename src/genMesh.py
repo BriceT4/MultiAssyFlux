@@ -113,7 +113,12 @@ def genMesh(input_file):
             'Delta_x': Delta_x
         })
 
-    mesh_fuel = [row for row in mesh if row['mat_ID'] != 0 and row['mat_ID'] != 3]
+    mesh_fuel = [row for index, row in enumerate(mesh) if row['mat_ID'] != 0 and row['mat_ID'] != 3]
+    cols_old = [index for index, row in enumerate(mesh) if row['mat_ID'] != 0 and row['mat_ID'] != 3]
+
+    for dictionary, col in zip(mesh_fuel, cols_old):
+        dictionary['cols_old'] = col
+
 
     timestr = time.strftime('%Y%m%d_%H%M%S')
     filename = f'MultiAssyFlux_mesh_{timestr}.csv'
@@ -122,7 +127,7 @@ def genMesh(input_file):
     fp = os.path.join(dir_output, filename)
 
     with open(fp, 'w', newline='') as csvfile:
-        fieldnames = list(mesh[0].keys())
+        fieldnames = list(mesh[0].keys()) + ['cols_old']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
