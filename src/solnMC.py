@@ -164,7 +164,8 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
                             data_gen_J[f'n_E={n_E}', m] += mu
                             travel_dist = travel_dist - (mesh['locs_right', m] - x)
                             x = locs_right_m
-                            m_old = m                        m += 1
+                            m_old = m
+                            m += 1
 
                             if m > (mesh.shape[1] - 1):
                                 n_exist, m, mu, travel_dist = fn_det_BC_interaction(input_file.bc_2,
