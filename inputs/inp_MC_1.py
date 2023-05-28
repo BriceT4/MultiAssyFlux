@@ -27,7 +27,7 @@ x_sections_set = 'xs\\x_sections_set_A.csv' # last letter can be A or B
 num_mesh = 4 # number of meshes per unit cell
 
 # number of generations
-num_gen = 50
+num_gen = 20
 # number of histories (particles)
-num_particles = 2000
+num_particles = 1000
 
