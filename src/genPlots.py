@@ -6,6 +6,7 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
+np.random.seed(0)
 import os
 import pandas as pd
 import time
