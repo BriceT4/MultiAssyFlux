@@ -4,11 +4,8 @@
 # (C) Brice Turner, 2023
 
 import numpy as np
-np.random.seed(0)
 import os
-import pandas as pd
 import time
-
 
 # BEGIN: MONTE CARLO SOLUTION FUNCTION #######################################
 time_start_solnMC = time.time()
@@ -35,7 +32,7 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     def fn_det_mesh_interaction(mesh, m, n_E, mu, S, travel_dist):
         R = np.random.rand()
 
-        # Sigma_tr = mesh.loc[f'Sigma_tr_{n_E}', m]
+        # Sigma_tr = mesh[m][f'Sigma_tr_{n_E}'] # transport xs, not needed for Monte Carlo
         Sigma_t = mesh[m][f'Sigma_t_{n_E}']
         Sigma_a = mesh[m][f'Sigma_a_{n_E}']
         Sigma_f = mesh[m][f'Sigma_f_{n_E}']
@@ -115,14 +112,14 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
         data_gen_J = np.zeros((2,len(mesh)))
         data_gen_Phi = np.zeros((2,len(mesh)))
         data_gen_Fi_t = np.zeros((2,len(mesh)))
-        data_gen_ms_birth = np.zeros(len(mesh))
+        # data_gen_ms_birth = np.zeros(len(mesh))
 
         # BEGIN: FOR EACH PARTICLE ###########################################
         for _ in range(num_particles):
             n_exist = True
             n_E = 1 # n's always born fast
             m, x = fn_det_pos_birth(mesh, mesh_fuel)
-            data_gen_ms_birth[m] += 1
+            # data_gen_ms_birth[m] += 1
             mu = 2*np.random.rand() - 1
             if mu == 0: # just to be safe
                 mu_decider = np.random.rand()
@@ -241,35 +238,34 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     Phi_fund_2 = (np.sum(data_tot_Phi[1::2, :], axis=0, keepdims=True)/num_gen).T
     k_fund = sum(ks)/num_gen
     print(f'k_fund = {k_fund}')
-    # else:
-    #     ... = pd.DataFrame(0, index=['n_E=1', 'n_E=2'], columns=mesh.columns)
+
     data = np.concatenate((TL_fund_1, TL_fund_2,
                            J_fund_1, J_fund_2,
                            Phi_fund_1, Phi_fund_2), axis=1).T
     
-    data_ks = pd.DataFrame({'ks':ks, 'k_fund':k_fund})
-    data_tot_ms_birth = pd.DataFrame({data_tot_ms_birth.sum(axis = 0)})
+    # data_ks = pd.DataFrame({'ks':ks, 'k_fund':k_fund})
+    data_ks = np.append(ks, k_fund)
     # END:   CALCULATE FUNDAMENTAL MODES #####################################
+
 
 
     # BEGIN: OUTPUTS #########################################################
     timestr = time.strftime('%Y%m%d_%H%M%S')
-
     filename = f'MultiAssyFlux_results_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
     fp_data = os.path.join(dir_output, filename)
     index_names = ['TL_fund_1','TL_fund_2',
                    'J_fund_1', 'J_fund_2',
                    'Phi_fund_1', 'Phi_fund_2']
     data = np.vstack((index_names, data.T))
-    np.savetxt(filename, data, delimiter=',', fmt='%s')
+    np.savetxt(fp_data, data, delimiter=',', fmt='%s')
 
     filename_ks = f'MultiAssyFlux_ks_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
     fp_ks = os.path.join(dir_output, filename_ks)
-    data_ks.to_csv(fp_ks)
+    np.savetxt(fp_ks, data_ks, delimiter=',', fmt='%s')
 
-    filename_birth = f'MultiAssyFlux_loc_births_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
-    fp_birth = os.path.join(dir_output, filename_birth)
-    data_tot_ms_birth.to_csv(fp_birth)
+    # filename_birth = f'MultiAssyFlux_loc_births_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
+    # fp_birth = os.path.join(dir_output, filename_birth)
+    # data_tot_ms_birth.to_csv(fp_birth)
     
     time_elapsed_solnMC = time.time() - time_start_solnMC
     time_p = (time_elapsed_solnMC/num_gen/num_particles)*1000 # milliseconds
