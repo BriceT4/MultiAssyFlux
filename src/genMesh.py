@@ -62,8 +62,8 @@ def genMesh(input_file):
     # Load x_sections_all data and headers
     with open(input_file.x_sections_set, 'r') as f:
         reader = csv.reader(f)
-        headers = next(reader) # read headers (the first row)
-        x_sections_all = {rows[0]:rows[1:] for rows in reader}
+        headers = next(reader)  # read headers (the first row)
+        x_sections_all = {rows[0]: [float(value) for value in rows[1:]] for rows in reader}
 
     # Apply cross sections to each mesh
     for row in mesh:
