@@ -60,8 +60,8 @@ def Setup(InputFile):
     from src.genMesh import genMesh
     mesh, mesh_fuel, dir_output = genMesh(InputFile)
 
-    # from src.solnMC import solnMC
-    # data, data_ks, fp_data, fp_ks = solnMC(InputFile, mesh, mesh_fuel, dir_output)
+    from src.solnMC import solnMC
+    data, data_ks, fp_data, fp_ks = solnMC(InputFile, mesh, mesh_fuel, dir_output)
 
     return mesh, mesh_fuel, dir_output # , data, data_ks, fp_data, fp_ks
 # END:   SETUP ###############################################################
