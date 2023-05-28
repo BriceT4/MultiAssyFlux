@@ -1,10 +1,9 @@
 #!/usr/bin/python
 # solnMC.py
 # A MultiAssyFlux module
-# UFL ENU6106 Spring 2023 Term Project
-# Brice Turner, 2023
+# (C) Brice Turner, 2023
 
-
+import math
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -15,29 +14,26 @@ from bokeh.plotting import figure
 from bokeh.io import output_file, show
 from bokeh.models import HoverTool
 
-
 # BEGIN: DEFINE FUNCTION #####################################################
-def plotter(mesh, data_ks, fp_data, fp_ks, dir_output):
-    data_my = pd.read_csv(fp_data, index_col = 0)
-    data_ks = pd.read_csv(fp_ks)
+def plotter(input_file, mesh, data_ks, fp_data, fp_ks, dir_output):
+    data_my = pd.read_csv(fp_data)
+    data_ks = pd.read_csv(fp_ks, header = None)
 
-    ms = mesh.loc['locs_center']
-    mats = mesh.loc['material']
-    TL_1 = data_my.loc['TL_fund_1',:]
-    TL_2 = data_my.loc['TL_fund_2',:]
-    J_fund_1 = data_my.loc['J_fund_1']
-    J_fund_2 = data_my.loc['J_fund_2']
-    Phi_fund_1 = data_my.loc['Phi_fund_1']
-    Phi_fund_2 = data_my.loc['Phi_fund_2']
+    mesh = pd.DataFrame(mesh)
 
-    ks = data_ks.iloc[:,1]
-    
+    ms = mesh['locs_center']
+    mats = mesh['material']
+    TL_1 = data_my['TL_fund_1']
+    TL_2 = data_my['TL_fund_2']
+    J_fund_1 = data_my['J_fund_1']
+    J_fund_2 = data_my['J_fund_2']
+    Phi_fund_1 = data_my['Phi_fund_1']
+    Phi_fund_2 = data_my['Phi_fund_2']
+
+    ks = data_ks.iloc[:,0]
+    x = range(1, np.size(ks)+1)  
 
     # BEGIN: STATIC FLUX PLOT ################################################
-    # plt.plot(ms, TL_1, label = '$TL_{1}$') # , drawstyle='steps-post'
-    # plt.plot(ms, TL_2, label = '$TL_{2}$') # , drawstyle='steps-post'
-    # plt.plot(ms, J_fund_1, color = 'k', label = '$J_{fund,1}$') # , drawstyle='steps-post'
-    # plt.plot(ms, J_fund_2, color = 'orange', label = '$J_{fund,2}$') # , drawstyle='steps-post'
     plt.plot(ms, Phi_fund_1, color = 'k', label = '$\Phi_{fund,1}$') # , drawstyle='steps-post'
     plt.plot(ms, Phi_fund_2, color = 'r', label = '$\Phi_{fund,2}$') # , drawstyle='steps-post'
 
@@ -69,9 +65,10 @@ def plotter(mesh, data_ks, fp_data, fp_ks, dir_output):
 
 
     # BEGIN: STATIC K PLOT ###################################################
-    plt.stairs(ks)
+    plt.plot(x, ks, drawstyle = 'steps-post')
     plt.xlabel('Generation')
     plt.ylabel('Multiplication factor, $k$ (arb. unit)')
+    # plt.xticks(np.arange(min(x), max(x)+1, 1))
     plt.ylim([0, 1.5])
     # plt.semilogy()
     plt.tight_layout()
