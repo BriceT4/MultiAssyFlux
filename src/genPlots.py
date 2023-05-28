@@ -3,7 +3,7 @@
 # A MultiAssyFlux module
 # (C) Brice Turner, 2023
 
-
+import math
 import matplotlib.pyplot as plt
 import numpy as np
 import os
@@ -31,8 +31,7 @@ def plotter(input_file, mesh, data_ks, fp_data, fp_ks, dir_output):
     Phi_fund_2 = data_my['Phi_fund_2']
 
     ks = data_ks.iloc[:,0]
-    ks = pd.concat([pd.Series([1]), ks]).reset_index(drop=True)
-    
+    x = range(1, np.size(ks)+1)  
 
     # BEGIN: STATIC FLUX PLOT ################################################
     plt.plot(ms, Phi_fund_1, color = 'k', label = '$\Phi_{fund,1}$') # , drawstyle='steps-post'
@@ -66,7 +65,6 @@ def plotter(input_file, mesh, data_ks, fp_data, fp_ks, dir_output):
 
 
     # BEGIN: STATIC K PLOT ###################################################
-    x = range(1, input_file.num_gen+1)
     plt.plot(x, ks, drawstyle = 'steps-post')
     plt.xlabel('Generation')
     plt.ylabel('Multiplication factor, $k$ (arb. unit)')
