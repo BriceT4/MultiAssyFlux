@@ -68,8 +68,7 @@ def plotter(input_file, mesh, data_ks, fp_data, fp_ks, dir_output):
     plt.plot(x, ks, drawstyle = 'steps-post')
     plt.xlabel('Generation')
     plt.ylabel('Multiplication factor, $k$ (arb. unit)')
-    plt.xticks(np.arange(min(x), max(x)+1, 1))
-
+    # plt.xticks(np.arange(min(x), max(x)+1, 1))
     plt.ylim([0, 1.5])
     # plt.semilogy()
     plt.tight_layout()
