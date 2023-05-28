@@ -234,11 +234,11 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     # BEGIN: CALCULATE FUNDAMENTAL MODES #####################################
 
     TL_fund_1 = (np.sum(data_tot_TL[::2, :], axis=0, keepdims=True)/num_gen).T
-    TL_fund_2 = (np.sum(data_tot_TL[::2, :], axis=0, keepdims=True)/num_gen).T
+    TL_fund_2 = (np.sum(data_tot_TL[1::2, :], axis=0, keepdims=True)/num_gen).T
     J_fund_1 = (np.sum(data_tot_J[::2, :], axis=0, keepdims=True)/num_gen).T
-    J_fund_2 = (np.sum(data_tot_J[::2, :], axis=0, keepdims=True)/num_gen).T
+    J_fund_2 = (np.sum(data_tot_J[1::2, :], axis=0, keepdims=True)/num_gen).T
     Phi_fund_1 = (np.sum(data_tot_Phi[::2, :], axis=0, keepdims=True)/num_gen).T
-    Phi_fund_2 = (np.sum(data_tot_Phi[::2, :], axis=0, keepdims=True)/num_gen).T
+    Phi_fund_2 = (np.sum(data_tot_Phi[1::2, :], axis=0, keepdims=True)/num_gen).T
     k_fund = sum(ks)/num_gen
     print(f'k_fund = {k_fund}')
     # else:
@@ -248,7 +248,7 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
                            Phi_fund_1, Phi_fund_2), axis=1).T
     
     data_ks = pd.DataFrame({'ks':ks, 'k_fund':k_fund})
-    data_tot_ms_birth = data_tot_ms_birth.sum(axis = 0)
+    data_tot_ms_birth = pd.DataFrame({data_tot_ms_birth.sum(axis = 0)})
     # END:   CALCULATE FUNDAMENTAL MODES #####################################
 
 
@@ -260,8 +260,8 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     index_names = ['TL_fund_1','TL_fund_2',
                    'J_fund_1', 'J_fund_2',
                    'Phi_fund_1', 'Phi_fund_2']
-    data.index = index_names
-    data.to_csv(fp_data)
+    data = np.vstack((index_names, data.T))
+    np.savetxt(filename, data, delimiter=',', fmt='%s')
 
     filename_ks = f'MultiAssyFlux_ks_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
     fp_ks = os.path.join(dir_output, filename_ks)
