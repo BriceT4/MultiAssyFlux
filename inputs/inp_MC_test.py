@@ -5,6 +5,7 @@
 # Brice Turner, 2023
 
 import numpy as np
+np.random.seed(0)
 
 D = 0.011058*100 # fuel rod diameter (cm) 
 Pitch = 0.014385*100 # fuel rod pitch (cm)
