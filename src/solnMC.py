@@ -3,6 +3,7 @@
 # A MultiAssyFlux module
 # (C) Brice Turner, 2023
 
+import math
 import numpy as np
 import os
 import time
@@ -12,6 +13,8 @@ time_start_solnMC = time.time()
 def solnMC(input_file, mesh, mesh_fuel, dir_output):
 
     size_mesh_fuel = len(mesh_fuel) - 1 # num cols - 1
+    gen_lower_lim = math.floor(0.1*input_file.num_gen)
+    gens_kept = input_file.num_gen - gen_lower_lim
 
     # BEGIN SAMPLE PARTICLE BIRTH POSITION ###################################
     def fn_det_pos_birth(mesh, mesh_fuel):
@@ -200,7 +203,7 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
 
 
         # BEGIN: CALCULATE PARAMETERS OF INTEREST ############################
-        if (g+1) > (0.1*input_file.num_gen):
+        if (g+1) > (gen_lower_lim):
             Delta_x_list = np.array([mesh['Delta_x'] for mesh in mesh if 'Delta_x' in mesh])
             data_gen_Phi = data_gen_TL/(k*num_particles*Delta_x_list)
 
@@ -223,20 +226,20 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
             data_tot_J = np.concatenate((data_tot_J, data_gen_J))
             data_tot_Phi = np.concatenate((data_tot_Phi, data_gen_Phi))
             data_tot_Fi_t = np.concatenate((data_tot_Fi_t, data_gen_Fi_t)) 
-            data_tot_ms_birth = np.concatenate((data_tot_ms_birth, data_gen_ms_birth)) 
+            # data_tot_ms_birth = np.concatenate((data_tot_ms_birth, data_gen_ms_birth)) 
         # END:   CALCULATE PARAMETERS OF INTEREST ############################
     # END:   FOR EACH GENERATION #############################################
 
 
     # BEGIN: CALCULATE FUNDAMENTAL MODES #####################################
 
-    TL_fund_1 = (np.sum(data_tot_TL[::2, :], axis=0, keepdims=True)/num_gen).T
-    TL_fund_2 = (np.sum(data_tot_TL[1::2, :], axis=0, keepdims=True)/num_gen).T
-    J_fund_1 = (np.sum(data_tot_J[::2, :], axis=0, keepdims=True)/num_gen).T
-    J_fund_2 = (np.sum(data_tot_J[1::2, :], axis=0, keepdims=True)/num_gen).T
-    Phi_fund_1 = (np.sum(data_tot_Phi[::2, :], axis=0, keepdims=True)/num_gen).T
-    Phi_fund_2 = (np.sum(data_tot_Phi[1::2, :], axis=0, keepdims=True)/num_gen).T
-    k_fund = sum(ks)/num_gen
+    TL_fund_1 = (np.sum(data_tot_TL[::2, :], axis=0, keepdims=True)/gens_kept).T
+    TL_fund_2 = (np.sum(data_tot_TL[1::2, :], axis=0, keepdims=True)/gens_kept).T
+    J_fund_1 = (np.sum(data_tot_J[::2, :], axis=0, keepdims=True)/gens_kept).T
+    J_fund_2 = (np.sum(data_tot_J[1::2, :], axis=0, keepdims=True)/gens_kept).T
+    Phi_fund_1 = (np.sum(data_tot_Phi[::2, :], axis=0, keepdims=True)/gens_kept).T
+    Phi_fund_2 = (np.sum(data_tot_Phi[1::2, :], axis=0, keepdims=True)/gens_kept).T
+    k_fund = sum(ks)/gens_kept
     print(f'k_fund = {k_fund}')
 
     data = np.concatenate((TL_fund_1, TL_fund_2,
