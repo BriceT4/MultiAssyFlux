@@ -5,7 +5,7 @@
 # Brice Turner, 2023
 
 import argparse
-import importlib
+import importlib.util
 import os
 
 # BEGIN: COMMAND LINE INTERFACE ##############################################
@@ -28,7 +28,7 @@ def setupCommandLine():
     parser.add_argument('-i', '--INPUT', nargs='?', dest='infile',
                         metavar='input_file', required=True,
                         help='Input file name. REQUIRED. Must be .py.\n'
-                            'Usage: -i/--INPUT <filename>.py')
+                             'Usage: -i/--INPUT <filename>.py')
     args = parser.parse_args()
 
     # Get the file path and the file name without the extension
@@ -56,14 +56,14 @@ def setupCommandLine():
 
 
 # BEGIN: SETUP ###############################################################
-def Setup(InputFile):
+def Setup(input_file):
     from src.genMesh import genMesh
-    mesh, mesh_fuel, dir_output = genMesh(InputFile)
+    mesh, mesh_fuel, dir_output = genMesh(input_file)
 
     from src.solnMC import solnMC
-    data, data_ks, fp_data, fp_ks = solnMC(InputFile, mesh, mesh_fuel, dir_output)
+    data_ks, fp_data, fp_ks = solnMC(input_file, mesh, mesh_fuel, dir_output)
 
-    return mesh, mesh_fuel, dir_output, data, data_ks, fp_data, fp_ks
+    return mesh, dir_output, data_ks, fp_data, fp_ks
 # END:   SETUP ###############################################################
 
 
@@ -83,7 +83,7 @@ def printSuccess():
     """)
 
 input_file = setupCommandLine()
-mesh, mesh_fuel, dir_output, data, data_ks, fp_data, fp_ks = Setup(input_file)
+mesh, dir_output, data_ks, fp_data, fp_ks = Setup(input_file)
 # plotIt(input_file, mesh, data_ks, fp_data, fp_ks, dir_output)
 printSuccess()
 
