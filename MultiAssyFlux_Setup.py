@@ -10,7 +10,8 @@ import os
 
 # BEGIN: COMMAND LINE INTERFACE ##############################################
 def setupCommandLine():
-    print(f"""
+    print(
+        f"""
 ##############################################################################
        __  __       _ _   _                       _______ _            
       |  \/  |     | | | (_)   /\                |   ____| |           
@@ -21,14 +22,21 @@ def setupCommandLine():
                                              __/ |                               
                                             |___/                                       
 ############################################################################## 
-    """)
+    """
+    )
 
-    desc = f'Command line interface for {os.path.basename(__file__)}.'
+    desc = f"Command line interface for {os.path.basename(__file__)}."
     parser = argparse.ArgumentParser(description=desc)
-    parser.add_argument('-i', '--INPUT', nargs='?', dest='infile',
-                        metavar='input_file', required=True,
-                        help='Input file name. REQUIRED. Must be .py.\n'
-                             'Usage: -i/--INPUT <filename>.py')
+    parser.add_argument(
+        "-i",
+        "--INPUT",
+        nargs="?",
+        dest="infile",
+        metavar="input_file",
+        required=True,
+        help="Input file name. REQUIRED. Must be .py.\n"
+        "Usage: -i/--INPUT <filename>.py",
+    )
     args = parser.parse_args()
 
     # Get the file path and the file name without the extension
@@ -36,7 +44,7 @@ def setupCommandLine():
     infile_name = os.path.splitext(os.path.basename(args.infile))[0]
 
     # Replace periods/dots with underscores in the module name
-    infile_name = infile_name.replace('.', '_')
+    infile_name = infile_name.replace(".", "_")
 
     # Make sure the input file exists
     if not os.path.isfile(file_path):
@@ -48,42 +56,49 @@ def setupCommandLine():
     spec.loader.exec_module(input_file)
 
     return input_file
+
+
 # END:   COMMAND LINE INTERFACE ##############################################
-
-
-
-
 
 
 # BEGIN: SETUP ###############################################################
 def Setup(input_file):
     from src.genMesh import genMesh
+
     mesh, mesh_fuel, dir_output = genMesh(input_file)
 
     from src.solnMC import solnMC
+
     data_ks, fp_data, fp_ks = solnMC(input_file, mesh, mesh_fuel, dir_output)
 
     return mesh, dir_output, data_ks, fp_data, fp_ks
+
+
 # END:   SETUP ###############################################################
 
 
 # BEGIN: PLOT ################################################################
 def plotIt(input_file, mesh, data_ks, fp_data, fp_ks, dir_output):
     from src.genPlots import plotter
+
     plotter(input_file, mesh, data_ks, fp_data, fp_ks, dir_output)
     return
+
+
 # END:   PLOT ################################################################
 
 
 def printSuccess():
-    print(f"""
+    print(
+        f"""
 ##############################################################################
-{os.path.basename(__file__)} sucessfully ran.
+{os.path.basename(__file__)} successfully ran.
 ##############################################################################
-    """)
+    """
+    )
+
 
 input_file = setupCommandLine()
 mesh, dir_output, data_ks, fp_data, fp_ks = Setup(input_file)
 # plotIt(input_file, mesh, data_ks, fp_data, fp_ks, dir_output)
 printSuccess()
-
