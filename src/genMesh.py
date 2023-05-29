@@ -4,6 +4,7 @@
 # (C) Brice Turner, 2023
 
 import numpy as np
+np.random.seed(0)
 import os
 import time
 import csv
