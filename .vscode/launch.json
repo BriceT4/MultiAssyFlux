@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/MultiAssyFlux_Setup.py",
             "console": "integratedTerminal",
-            "args": ["-i", "inputs/small_test.py"],
+            "args": ["-i", "inputs/inp_MC_1.py"],
             "justMyCode": true
         }
     ]

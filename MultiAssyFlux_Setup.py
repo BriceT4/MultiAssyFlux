@@ -100,5 +100,5 @@ def printSuccess():
 
 input_file = setupCommandLine()
 mesh, dir_output, data_ks, fp_data, fp_ks = Setup(input_file)
-# plotIt(input_file, mesh, data_ks, fp_data, fp_ks, dir_output)
+plotIt(input_file, mesh, data_ks, fp_data, fp_ks, dir_output)
 printSuccess()

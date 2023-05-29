@@ -8,7 +8,6 @@ import os
 import time
 import csv
 
-np.random.seed(0)
 time_start_genMesh = time.time()
 
 

@@ -8,8 +8,6 @@ import os
 import pandas as pd
 import time
 
-np.random.seed(0)
-
 # BEGIN: MONTE CARLO SOLUTION FUNCTION #######################################
 time_start_solnMC = time.time()
 
