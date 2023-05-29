@@ -203,30 +203,29 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
 
 
         # BEGIN: CALCULATE PARAMETERS OF INTEREST ############################
-        if (g+1) > (0.1*input_file.num_gen):
-            Delta_x_list = np.array([mesh['Delta_x'] for mesh in mesh if 'Delta_x' in mesh])
-            data_gen_Phi = data_gen_TL/(k*num_particles*Delta_x_list)
+        Delta_x_list = np.array([mesh['Delta_x'] for mesh in mesh if 'Delta_x' in mesh])
+        data_gen_Phi = data_gen_TL/(k*num_particles*Delta_x_list)
 
-            v_f_1_list = np.array([mesh['v_f_1'] for mesh in mesh if 'v_f_1' in mesh])
-            Sigma_f_1_list = np.array([mesh['Sigma_f_1'] for mesh in mesh if 'Sigma_f_1' in mesh])
-            n_E_1_list = data_gen_Phi[0]
-            data_gen_Fi_1 = v_f_1_list*Sigma_f_1_list*n_E_1_list
+        v_f_1_list = np.array([mesh['v_f_1'] for mesh in mesh if 'v_f_1' in mesh])
+        Sigma_f_1_list = np.array([mesh['Sigma_f_1'] for mesh in mesh if 'Sigma_f_1' in mesh])
+        n_E_1_list = data_gen_Phi[0]
+        data_gen_Fi_1 = v_f_1_list*Sigma_f_1_list*n_E_1_list
 
-            v_f_2_list = np.array([mesh['v_f_2'] for mesh in mesh if 'v_f_2' in mesh])
-            Sigma_f_2_list = np.array([mesh['Sigma_f_2'] for mesh in mesh if 'Sigma_f_2' in mesh])
-            n_E_2_list = data_gen_Phi[1]
-            data_gen_Fi_2 = v_f_2_list*Sigma_f_2_list*n_E_2_list
-            
-            data_gen_Fi_t = np.transpose(data_gen_Fi_1 + data_gen_Fi_2)
-            k = k * (Delta_x_list*data_gen_Fi_t).sum().sum()
-            ks.append(k)
-            print(f'k: {k}')
+        v_f_2_list = np.array([mesh['v_f_2'] for mesh in mesh if 'v_f_2' in mesh])
+        Sigma_f_2_list = np.array([mesh['Sigma_f_2'] for mesh in mesh if 'Sigma_f_2' in mesh])
+        n_E_2_list = data_gen_Phi[1]
+        data_gen_Fi_2 = v_f_2_list*Sigma_f_2_list*n_E_2_list
+        
+        data_gen_Fi_t = np.transpose(data_gen_Fi_1 + data_gen_Fi_2)
+        k = k * (Delta_x_list*data_gen_Fi_t).sum().sum()
+        ks.append(k)
+        print(f'k: {k}')
 
-            data_tot_TL = np.concatenate((data_tot_TL, data_gen_TL))
-            data_tot_J = np.concatenate((data_tot_J, data_gen_J))
-            data_tot_Phi = np.concatenate((data_tot_Phi, data_gen_Phi))
-            data_tot_Fi_t = np.concatenate((data_tot_Fi_t, data_gen_Fi_t)) 
-            data_tot_ms_birth = np.concatenate((data_tot_ms_birth, data_gen_ms_birth)) 
+        data_tot_TL = np.concatenate((data_tot_TL, data_gen_TL))
+        data_tot_J = np.concatenate((data_tot_J, data_gen_J))
+        data_tot_Phi = np.concatenate((data_tot_Phi, data_gen_Phi))
+        data_tot_Fi_t = np.concatenate((data_tot_Fi_t, data_gen_Fi_t)) 
+        data_tot_ms_birth = np.concatenate((data_tot_ms_birth, data_gen_ms_birth)) 
         # END:   CALCULATE PARAMETERS OF INTEREST ############################
     # END:   FOR EACH GENERATION #############################################
 
@@ -240,7 +239,7 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     Phi_fund_1 = (np.sum(data_tot_Phi[::2, :], axis=0, keepdims=True)/num_gen).T
     Phi_fund_2 = (np.sum(data_tot_Phi[1::2, :], axis=0, keepdims=True)/num_gen).T
     k_fund = sum(ks)/num_gen
-    print(f'k_fund = {k_fund}')git 
+    print(f'k_fund = {k_fund}')
     # else:
     #     ... = pd.DataFrame(0, index=['n_E=1', 'n_E=2'], columns=mesh.columns)
     data = np.concatenate((TL_fund_1, TL_fund_2,
@@ -255,16 +254,16 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     # BEGIN: OUTPUTS #########################################################
     timestr = time.strftime('%Y%m%d_%H%M%S')
 
-    # filename = f'MultiAssyFlux_results_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
-    # fp_data = os.path.join(dir_output, filename)
+    filename = f'MultiAssyFlux_results_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
+    fp_data = os.path.join(dir_output, filename)
     # index_names = ['TL_fund_1','TL_fund_2',
     #                'J_fund_1', 'J_fund_2',
     #                'Phi_fund_1', 'Phi_fund_2']
     # data = np.vstack((index_names, data.T))
     # np.savetxt(fp_data, data, delimiter=',', fmt='%s')
 
-    # filename_ks = f'MultiAssyFlux_ks_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
-    # fp_ks = os.path.join(dir_output, filename_ks)
+    filename_ks = f'MultiAssyFlux_ks_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
+    fp_ks = os.path.join(dir_output, filename_ks)
     # data_ks.to_csv(fp_ks)
 
     # filename_birth = f'MultiAssyFlux_loc_births_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
