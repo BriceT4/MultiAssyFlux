@@ -240,7 +240,7 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     Phi_fund_1 = (np.sum(data_tot_Phi[::2, :], axis=0, keepdims=True)/num_gen).T
     Phi_fund_2 = (np.sum(data_tot_Phi[1::2, :], axis=0, keepdims=True)/num_gen).T
     k_fund = sum(ks)/num_gen
-    print(f'k_fund = {k_fund}')
+    print(f'k_fund = {k_fund}')git 
     # else:
     #     ... = pd.DataFrame(0, index=['n_E=1', 'n_E=2'], columns=mesh.columns)
     data = np.concatenate((TL_fund_1, TL_fund_2,
@@ -255,21 +255,21 @@ def solnMC(input_file, mesh, mesh_fuel, dir_output):
     # BEGIN: OUTPUTS #########################################################
     timestr = time.strftime('%Y%m%d_%H%M%S')
 
-    filename = f'MultiAssyFlux_results_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
-    fp_data = os.path.join(dir_output, filename)
-    index_names = ['TL_fund_1','TL_fund_2',
-                   'J_fund_1', 'J_fund_2',
-                   'Phi_fund_1', 'Phi_fund_2']
-    data = np.vstack((index_names, data.T))
-    np.savetxt(fp_data, data, delimiter=',', fmt='%s')
+    # filename = f'MultiAssyFlux_results_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
+    # fp_data = os.path.join(dir_output, filename)
+    # index_names = ['TL_fund_1','TL_fund_2',
+    #                'J_fund_1', 'J_fund_2',
+    #                'Phi_fund_1', 'Phi_fund_2']
+    # data = np.vstack((index_names, data.T))
+    # np.savetxt(fp_data, data, delimiter=',', fmt='%s')
 
-    filename_ks = f'MultiAssyFlux_ks_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
-    fp_ks = os.path.join(dir_output, filename_ks)
-    data_ks.to_csv(fp_ks)
+    # filename_ks = f'MultiAssyFlux_ks_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
+    # fp_ks = os.path.join(dir_output, filename_ks)
+    # data_ks.to_csv(fp_ks)
 
-    filename_birth = f'MultiAssyFlux_loc_births_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
-    fp_birth = os.path.join(dir_output, filename_birth)
-    data_tot_ms_birth.to_csv(fp_birth)
+    # filename_birth = f'MultiAssyFlux_loc_births_MC_g{num_gen}_n{num_particles}_{timestr}.csv'
+    # fp_birth = os.path.join(dir_output, filename_birth)
+    # data_tot_ms_birth.to_csv(fp_birth)
     
     time_elapsed_solnMC = time.time() - time_start_solnMC
     time_p = (time_elapsed_solnMC/num_gen/num_particles)*1000 # milliseconds
