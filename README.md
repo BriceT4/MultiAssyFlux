@@ -33,6 +33,7 @@ python MultiAssyFlux_Setup.py -i </entire/path/to/input/filename>.py
 This is a 1-D code. It solves the problems given using basic Monte Carlo transport/tracking principles given only a 2-group (far from realistic) cross section dataset.
 
 ## Version history
+- v1.1.0: significant speed improvement, 230530 BAT
 - v1.0.0: initial release, 230515 BAT
 
 ## License
